@@ -1,6 +1,8 @@
 LLLog
 =====
 
+A Platform Agnostic Analytics and Logging System for iOS by Lambda Labs.
+
 Say goodby to analytics lock-in. Now changing analytics systems is as easy as
 changing your socks.
 
