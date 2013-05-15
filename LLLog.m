@@ -97,7 +97,12 @@ static LLLog *sharedLLLog;
 #endif
     
 #if LL_ENABLED_MIXPANEL
-    [[Mixpanel sharedInstance] track:key properties:properties];
+    if ([[properties class] isSubclassOfClass:[NSDictionary class]])
+        [[Mixpanel sharedInstance] track:key properties:properties];
+    else
+        [[Mixpanel sharedInstance] track:key
+                              properties:@{ @"properties": [NSString stringWithFormat:@"%@", properties] }];
+    
 #endif
     
 #if LL_ENABLED_FLURRY
