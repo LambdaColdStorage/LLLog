@@ -99,6 +99,8 @@ static LLLog *sharedLLLog;
 #if LL_ENABLED_MIXPANEL
     if ([[properties class] isSubclassOfClass:[NSDictionary class]])
         [[Mixpanel sharedInstance] track:key properties:properties];
+    else if (properties == nil)
+        [[Mixpanel sharedInstance] track:key];
     else
         [[Mixpanel sharedInstance] track:key
                               properties:@{ @"properties": [NSString stringWithFormat:@"%@", properties] }];
@@ -106,7 +108,12 @@ static LLLog *sharedLLLog;
 #endif
     
 #if LL_ENABLED_FLURRY
-    [Flurry logEvent:key withParameters:properties];
+    if ([[properties class] isSubclassOfClass:[NSDictionary class]])
+        [Flurry logEvent:key withParameters:properties];
+    else if (properties == nil)
+        [Flurry logEvent:key];
+    else
+        [Flurry logEvent:key withParameters:@{ @"properties": [NSString stringWithFormat:@"%@", properties] }];
 #endif
     
 }
