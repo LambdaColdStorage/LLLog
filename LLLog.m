@@ -71,10 +71,8 @@ static LLLog *sharedLLLog;
     // Optional: set Google Analytics dispatch interval to e.g. 20 seconds.
     [GAI sharedInstance].dispatchInterval = 20;
     // Optional: set debug to YES for extra debugging information.
-    [GAI sharedInstance].debug = NO;
     // Create tracker instance.
     [[GAI sharedInstance] trackerWithTrackingId:LL_TOKEN_GA];
-    [GAI sharedInstance].debug = NO;
 #endif
     
 #if LL_ENABLED_MIXPANEL
@@ -90,10 +88,10 @@ static LLLog *sharedLLLog;
 
 + (void)logKey:(NSString *)key withProperties:(id)properties {
 #if LL_ENABLED_GA
-    [[[GAI sharedInstance] defaultTracker] sendEventWithCategory:@"Event"
-                                                      withAction:key
-                                                       withLabel:[NSString stringWithFormat:@"%@", properties]
-                                                       withValue:nil];
+    [[[GAI sharedInstance] defaultTracker] send:[[GAIDictionaryBuilder
+                                                  createEventWithCategory:@"Event"
+                                                  action:key label:[NSString stringWithFormat:@"%@", properties]
+                                                  value:nil] build]];
 #endif
     
 #if LL_ENABLED_MIXPANEL
@@ -120,10 +118,11 @@ static LLLog *sharedLLLog;
 
 + (void)logErrorName:(NSString *)errorName withNSExceptionOrNSError:(id)error {
 #if LL_ENABLED_GA
-    [[[GAI sharedInstance] defaultTracker] sendEventWithCategory:@"Error"
-                                                      withAction:error
-                                                       withLabel:[NSString stringWithFormat:@"%@", error]
-                                                       withValue:nil];
+    [[[GAI sharedInstance] defaultTracker] send:[[GAIDictionaryBuilder
+                                                 createEventWithCategory:@"Error"
+                                                 action:errorName
+                                                 label:errorName value:nil]
+                                                 build]];
 #endif
     
 #if LL_ENABLED_MIXPANEL
